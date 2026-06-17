@@ -1,0 +1,162 @@
+\documentclass[12pt,a4paper]{ctexart}
+
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{graphicx}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!55!black,
+  urlcolor=blue!55!black
+}
+
+\setlist{itemsep=2pt,topsep=4pt}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{3pt}
+
+\newtcolorbox{questionbox}[1]{
+  enhanced,
+  breakable,
+  colback=blue!3!white,
+  colframe=blue!65!black,
+  colbacktitle=blue!65!black,
+  coltitle=white,
+  title={#1},
+  fonttitle=\bfseries,
+  left=3mm,
+  right=3mm,
+  top=1.5mm,
+  bottom=1.5mm,
+  boxrule=0.75pt,
+  arc=1mm
+}
+
+\newtcolorbox{answerbox}[1][正式答案]{
+  enhanced,
+  breakable,
+  colback=green!4!white,
+  colframe=green!45!black,
+  colbacktitle=green!45!black,
+  coltitle=white,
+  title={#1},
+  fonttitle=\bfseries,
+  left=3mm,
+  right=3mm,
+  top=1.5mm,
+  bottom=1.5mm,
+  boxrule=0.75pt,
+  arc=1mm
+}
+
+\newtcolorbox{notebox}[1][重点]{
+  enhanced,
+  breakable,
+  colback=yellow!8!white,
+  colframe=yellow!45!black,
+  title={#1},
+  fonttitle=\bfseries,
+  left=3mm,
+  right=3mm,
+  top=1.5mm,
+  bottom=1.5mm,
+  boxrule=0.6pt,
+  arc=1mm
+}
+
+\newtcolorbox{warningbox}[1][易错点]{
+  enhanced,
+  breakable,
+  colback=red!3!white,
+  colframe=red!55!black,
+  title={#1},
+  fonttitle=\bfseries,
+  left=3mm,
+  right=3mm,
+  top=1.5mm,
+  bottom=1.5mm,
+  boxrule=0.6pt,
+  arc=1mm
+}
+
+\newcommand{\examfield}[1]{\par\smallskip\noindent\textbf{#1：}}
+\newcommand{\sourcehint}[1]{\par\smallskip\noindent{\footnotesize\color{gray!75!black}来源：#1}}
+
+\title{课程期末复习资料}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{考试范围与复习总览}
+
+% 根据真实资料填写课程框架、考试范围、教师重点、章节关系和复习顺序。
+
+\section{理论课章节知识点完整总结}
+
+% 大课程建议拆成 sections/ch01-title.tex 等文件，并在此处使用 \input{sections/ch01-title} 组装。
+% 课件例题应放在对应知识点附近；作业题、往年题、专项训练和预测题放在后续独立章节。
+
+\subsection{示例章节标题}
+
+\begin{notebox}[本章目标]
+这里写本章要掌握的核心问题。正式资料中删除所有示例文字。
+\end{notebox}
+
+\subsubsection{核心知识点}
+
+写成完整讲解：定义、背景、原理、公式、适用条件、例题、图表解释、易错点和考试问法。
+
+\subsubsection{课件例题}
+
+把教师课件中的例题放在对应知识点下，先说明它考查什么，再写完整解析和答案。
+
+\section{公式与关键结论汇总}
+
+\section{易混概念、方法与模型对比}
+
+\section{作业题与概念理解整理}
+
+\subsection*{作业题 X：题目标题}
+
+\begin{questionbox}{原题}
+放原题题干。题干和答案必须分开。
+\end{questionbox}
+
+\examfield{对应知识点}
+填写知识点。
+
+\examfield{题目解析}
+填写解析。
+
+\begin{answerbox}
+填写正式答案。
+\end{answerbox}
+
+\begin{warningbox}
+填写易错点。
+\end{warningbox}
+
+\section{往年试卷整理}
+
+\section{考试题型专项训练与预测题}
+
+% 根据用户提供的考试题型组织训练，例如名词解释、简答、选择、判断、计算、应用、代码分析或设计题。
+% 答题思路只从教师答案、作业答案、样卷答案或往年参考答案中归纳，不硬造固定模板。
+% 若考试会考名词解释或术语解释，可另建“名词解释集中背诵版”章节或单独输出一份背诵版。
+% 背诵版条目保持干净：术语、英文名（必要时）、解释、辨析或例子；不要加入 [原题][核心] 等标签。
+
+\section{考试当天速览}
+
+% 自由组织成适合临考快速查看的形式，例如关键概念、易错点、公式、题型步骤或最后检查清单。
+
+\end{document}
