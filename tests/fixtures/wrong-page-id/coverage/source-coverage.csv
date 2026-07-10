@@ -1,0 +1,3 @@
+source_file,unit_id,unit_type,knowledge_point_id,extracted_items,output_location,status,uncertainty
+slides-ch01.pdf,1,slide,KP-001,definition and worked example,sections/ch01.tex#kp-001,mapped,
+slides-ch01.pdf,3,slide,,chapter divider,,non-content,

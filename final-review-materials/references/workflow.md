@@ -2,6 +2,22 @@
 
 Use this workflow for Chinese final-exam review handouts whose output is a detailed LaTeX project.
 
+## Contents
+
+- Source Priority
+- Input Inventory
+- Working Directories
+- Evidence Gates Before Drafting
+- OCR And Extraction
+- Chapter Planning And Section Files
+- Zero-Base Teaching Contract
+- Chapter Reconstruction
+- Conditional Lab Content
+- Lecture Example Discovery And Cataloging
+- Questions
+- Image Handling
+- Final Document
+
 ## Source Priority
 
 1. Teacher theory slides, lab slides, official exam scope, notices, and in-class emphasis.
@@ -24,6 +40,19 @@ Before drafting the handout, list each source file with:
 - Assignment or exam question list.
 - OCR risks, missing pages, unclear images, incomplete answers, or unreadable formulas.
 
+Also record each source in `coverage/source-inventory.csv`:
+
+- `source_file`: stable path or file name used by the other coverage files.
+- `source_type`: theory slides, lab slides, official scope, textbook, assignment, answer key, past exam, senior note, or other.
+- `coverage_mode`: `page` for slides and page-addressable official material, `item` for question sets or other countable units, and `reference` for sources used selectively to deepen explanations.
+- `unit_count`: total pages, slides, or countable items when the mode is `page` or `item`.
+- `read_status`: `pending`, `complete`, `partial`, or `unreadable`.
+- `example_scan_status`: `pending`, `complete`, `partial`, or `not-applicable`.
+- `notes`: scope limits, missing pages, OCR risks, or reasons for `not-applicable`.
+
+Use `page` coverage for every teacher theory deck, lab deck, and official exam-scope file. Use `reference` for a large textbook only when the user did not ask for full textbook coverage and only selected chapters are relevant.
+For `page` coverage, normalize `unit_id` to consecutive integers `1` through `unit_count` in visual page or slide order. Record printed page numbers separately in extraction notes when they differ.
+
 This inventory is a working artifact. Do not force it into the final PDF unless the user asks. The final PDF should not contain `资料说明`, source directories, version notes, change logs, or directory-sorting sections by default.
 
 ## Working Directories
@@ -32,12 +61,39 @@ Use the generated project directories consistently:
 
 - `sources/`: original PDFs, PPTs, notes, assignments, exams, and scope files or symlinks/copies chosen by the user.
 - `extracted/`: one Markdown extraction note per source, named like `slides-ch03.md` or `past-exam-2024.md`.
+- `coverage/`: source inventory, per-unit coverage, lecture-example catalog, and course map used as internal evidence.
 - `figures/`: cropped or redrawn figures used by LaTeX.
 - `sections/`: chapter-level `.tex` files for large courses.
 - `build/`: compiler output when the command supports an output directory.
 - `logs/`: OCR, extraction, build, and visual-check notes.
 
 Each `extracted/source-name.md` should record page or slide numbers, OCR text, figure indexes, crop file names, uncertain OCR, missing pages, and source-specific observations. Treat these files as the memory bridge between raw materials and the final LaTeX handout.
+
+## Evidence Gates Before Drafting
+
+Do not start chapter prose after only skimming file names or extracting a single text dump. First establish these internal working artifacts:
+
+1. `coverage/source-inventory.csv`: one row per input source.
+2. `coverage/source-coverage.csv`: one row per required page, slide, or item.
+3. `coverage/example-catalog.csv`: one row per lecture example, worked demonstration, in-slide exercise, or question-like prompt.
+4. `coverage/course-map.md`: teacher-order chapter map, knowledge-point IDs, prerequisites, source anchors, and planned output files.
+
+For `source-coverage.csv`, use these normalized statuses:
+
+- `mapped`: substantive content is written into the stated output location.
+- `merged`: true duplicate content is merged into another mapped knowledge point; keep the destination in `output_location`.
+- `non-content`: title, divider, navigation, decoration, or genuinely empty material; explain briefly in `uncertainty` or `extracted_items`.
+- `needs-review`: OCR, source damage, answer conflict, or interpretation remains unresolved.
+
+Each row should preserve the source unit, unit type, knowledge-point ID, extracted concepts/formulas/figures/examples, output location, status, and uncertainty. Do not leave a page absent because it looks unimportant; record it and classify it.
+
+Before final delivery, run:
+
+```text
+python scripts/audit_source_coverage.py <review-project> --strict
+```
+
+Use the project interpreter or the approved one-off document tool environment. Strict mode must fail while units are missing, example scanning is incomplete, mapped content lacks an output location, or any unresolved warning remains.
 
 ## OCR And Extraction
 
@@ -46,6 +102,7 @@ Each `extracted/source-name.md` should record page or slide numbers, OCR text, f
 - OCR image crops with an available engine such as PaddleOCR, Tesseract, Windows OCR, or an installed project-specific OCR tool. Prefer the best available local tool; do not install new OCR dependencies without user approval.
 - Save OCR output and extraction notes into `extracted/` before drafting final chapters when there is more than one source file or when OCR is nontrivial.
 - For each important image, preserve page/slide provenance and a short description.
+- Inspect pages visually for examples even when OCR finds no `例题` keyword. Question-like material may appear as screenshots, diagrams, code, worked calculations, `Example`, `课堂练习`, `思考`, `试一试`, `习题`, prompts ending in a question mark, or a setup whose solution appears on later slides.
 - Check formulas, subscripts, superscripts, Greek letters, Chinese technical terms, arrows, axes, and circuit/interface labels manually after OCR.
 - Mark uncertain OCR as `需人工核对`; do not silently normalize unclear terms.
 
@@ -54,12 +111,38 @@ Each `extracted/source-name.md` should record page or slide numbers, OCR text, f
 For small courses, writing directly in `main.tex` is acceptable. For large courses or many source files:
 
 1. Build a chapter map from teacher materials first.
-2. Map textbook, assignment, past-exam, and note content into that chapter map.
-3. Create one file per chapter under `sections/`, such as `sections/ch01-intro.tex`.
-4. Assemble section files from `main.tex` using `\input{sections/ch01-intro}`.
-5. Keep chapter-local figures near their chapter in naming, such as `figures/ch03-cache-mapping.png`.
+2. Assign stable knowledge-point IDs and record prerequisite relationships in `coverage/course-map.md`.
+3. Map textbook, assignment, past-exam, and note content into that chapter map.
+4. Create one file per chapter under `sections/`, such as `sections/ch01-intro.tex`.
+5. Assemble section files from `main.tex` using `\input{sections/ch01-intro}`.
+6. Keep chapter-local figures near their chapter in naming, such as `figures/ch03-cache-mapping.png`.
 
 If content is too large for one pass, split generation into chapters. Do not shorten explanations, drop examples, or omit basic concepts to fit a single response.
+
+## Zero-Base Teaching Contract
+
+Write for a student who has not attended the lectures and may not know the chapter's assumed vocabulary. For each nontrivial concept, method, formula, protocol, system, or experiment, build a teaching chain with the applicable elements below:
+
+1. Prerequisites: name and briefly recover the earlier ideas needed here.
+2. Motivating problem: explain what difficulty the concept solves and why the older approach is insufficient.
+3. Intuition: give a plain-language mental model before formal terminology.
+4. Formal definition: introduce the precise term only after the reader has a foothold.
+5. Mechanism or derivation: show intermediate states, causal steps, or mathematical transitions instead of jumping to the result.
+6. Symbols and conditions: explain every symbol, unit, direction, assumption, valid range, and applicability condition at first use.
+7. Lecture example: work through the source example step by step and connect each step to the rule just taught.
+8. Mistake or counterexample: show the most likely wrong interpretation and why it fails.
+9. Quick self-check: add a short recall, judgment, or one-step application when it materially helps learning.
+10. Exam wording: show how the same idea can appear in the confirmed or source-inferred exam format.
+
+Adapt this chain to the content. Do not create empty repetitive headings for a trivial definition, but do not omit prerequisites, intermediate reasoning, or a worked use merely because the slides are terse.
+
+Apply these hard readability rules:
+
+- Define a technical term before using it to explain another new term.
+- Expand abbreviations at first use unless the course treats them as universally known.
+- Explain what to observe in a figure, table, waveform, or code fragment; a caption alone is not teaching.
+- For formulas used in calculations, include at least one source example or a clearly labeled derived micro-example when the source has none.
+- Distinguish a memory aid from the full explanation; mnemonics and summary tables cannot replace teaching prose.
 
 ## Chapter Reconstruction
 
@@ -85,6 +168,8 @@ Write in a textbook-like review style: long-form explanations first, then exam h
 
 Place lecture examples directly under the concept, formula, algorithm, or experiment they teach. Do not move lecture examples into a detached question bank unless the user explicitly asks.
 
+After drafting a chapter, reverse-audit every `mapped` or `merged` coverage row assigned to that chapter. Confirm that the final prose still contains every non-duplicate concept, mechanism, field meaning, formula, comparison, figure, example, and in-slide exercise. Add missing substance at the original knowledge-point location; do not create a detached `补充知识点` block.
+
 Keep the complete review handout as the main artifact. Exam-type practice, memorization packs, and last-minute summaries should supplement the full chapter explanation, not replace it.
 
 ## Conditional Lab Content
@@ -108,6 +193,37 @@ When the lab gate is met, each lab topic should include:
 - Relationship to theory chapters.
 
 Do not write lab sections as experiment reports. Explain what the lab proves, why steps are used, and how it can be examined.
+
+## Lecture Example Discovery And Cataloging
+
+Treat lecture examples as source content, not optional practice. Search both extracted text and rendered pages for:
+
+- explicit labels such as `例`, `例题`, `Example`, `课堂练习`, `思考`, `试一试`, and `习题`;
+- question marks, given conditions, requested outputs, fill-in blanks, calculations, code traces, diagrams to analyze, and teacher demonstrations;
+- a problem introduced on one slide and solved incrementally across later slides;
+- screenshots or embedded images containing a stem, options, table, graph, waveform, circuit, or answer.
+
+Register each example in `coverage/example-catalog.csv` before writing it. Preserve:
+
+- a stable `example_id`, source file, and page/slide/item identifier;
+- example type and mapped knowledge-point ID;
+- whether the full stem is complete;
+- whether necessary media is preserved, faithfully redrawn, unnecessary, or still needs review;
+- answer provenance: teacher/source answer, derived solution, missing answer, or unresolved conflict;
+- final output location, mapping status, and uncertainty.
+
+Use `mapped`, `merged`, or `needs-review` for example status. `merged` is allowed only for a genuinely duplicate example and must point to the retained output location.
+Use `complete`, `partial`, or `unreadable` for stem status; `not-needed`, `preserved`, `redrawn`, or `needs-review` for media status; and `teacher`, `source`, `derived`, `missing`, `conflict`, or `needs-review` for answer source.
+
+In the final chapter:
+
+- Preserve the original stem and subparts in source order.
+- State what the example teaches before solving it when that helps a beginner.
+- For calculations, expose known quantities, target, rule selection, substitution, intermediate steps, units, result, and sanity check.
+- For conceptual, code, diagram, or design examples, use an equivalent explicit reasoning sequence suited to the task.
+- Label a reconstructed answer as `推导解答` or `参考解答`; never present it as the teacher's answer.
+- Keep a multi-slide solution together even when its stem and answer were extracted from different pages.
+- Keep the full worked example beside its knowledge point. A compact example index may point to it, but must not duplicate or replace it.
 
 ## Questions
 
@@ -159,5 +275,7 @@ Prediction questions should follow the stated or inferred exam question types. P
 The final document should read as a polished review handout, not a work log. It should be detailed, non-duplicative, source-faithful, and directly compilable.
 
 Completeness is a hard requirement. If time, context, or document size becomes limiting, stop at a clean chapter boundary and continue in the next chapter; do not silently reduce depth.
+
+Do not claim completion until the strict source-coverage audit passes. If missing or damaged source material makes a clean audit impossible, preserve the failing result, label the delivery incomplete or partially verified, and surface every warning as a manual-check item. Page count, word count, chapter-title presence, or a clean LaTeX log is not evidence of source completeness.
 
 Do not include `资料说明`, `资料识别与目录梳理`, source catalogs, version/change notes, or standalone symbol-convention pages in the final handout by default. Explain symbols beside formulas and use a formula/key-conclusion summary when useful. Add a short考试当天速览 or临考速记 section near the end when it helps last-minute review; choose its shape freely based on the course and exam types.

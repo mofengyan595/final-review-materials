@@ -1,0 +1,2 @@
+example_id,source_file,unit_id,example_type,knowledge_point_id,stem_status,media_status,answer_source,output_location,status,uncertainty
+EX-001,slides-ch01.pdf,1,calculation,KP-001,complete,not-needed,teacher,sections/ch01.tex#ex-001,mapped,

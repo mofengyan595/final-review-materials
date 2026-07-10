@@ -1,4 +1,4 @@
-﻿interface:
+interface:
   display_name: "Final Review Materials"
-  short_description: "Create complete LaTeX review handouts with exam-type practice"
-  default_prompt: "Use $final-review-materials to create a detailed LaTeX exam review handout from course PDFs, PPTs, assignments, notes, past exams, and any exam question types I provide."
+  short_description: "Create zero-base, slide-complete LaTeX exam reviews"
+  default_prompt: "Use $final-review-materials to turn my course slides and related materials into a zero-base, course-replacing LaTeX review handout with complete lecture-example extraction and source-coverage auditing."
